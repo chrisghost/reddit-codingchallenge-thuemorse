@@ -8,6 +8,7 @@ class TheMorseSpec extends Specification {
   "ThueMorse" should {
     "compute the thue-morse value correctly" in {
       resultAsString(ThueMorse.iterCompute(6)) mustEqual "0110100110010110100101100110100110010110011010010110100110010110"
+      ThueMorse.bitCompute(6) mustEqual "0110100110010110100101100110100110010110011010010110100110010110"
     }
   }
 }

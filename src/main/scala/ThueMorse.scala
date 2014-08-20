@@ -29,6 +29,16 @@ object ThueMorse {
     else acc
   }
 
+  def subsitution(s: String) = s.map { _ match {
+    case '0' => "01"
+    case _ => "10"
+  } }.mkString
+  def strSubstitutionCompute(n: Int): String = strSubstitutionCompute("0", n)
+  def strSubstitutionCompute(acc: String, n: Int): String = {
+    if(n > 0) strSubstitutionCompute(subsitution(acc), n-1)
+    else acc
+  }
+
   def iterCompute(n: Int) = {
     var nn = n
     var r: List[Boolean] = List(false)
@@ -37,6 +47,23 @@ object ThueMorse {
       nn -= 1
     }
     r
+  }
+
+
+  def count_set_bits(nn: Int) = {
+    var count = 0
+    var n = nn
+    while(n != 0) {
+      n &= (n-1)
+      count += 1
+    }
+    count
+  }
+  def bitCompute(n: Int) = {
+    val top = scala.math.pow(2.toInt, n).toInt - 1
+    (0 to top).map { x =>
+      if(count_set_bits(x) % 2 != 0) '1' else '0'
+    }.mkString
   }
 }
 
@@ -49,6 +76,8 @@ object ThueMorseCompute {
       case "iter" => time { ThueMorse.iterCompute(nth) }
       case "str" => time { ThueMorse.strCompute(nth) } //.resultAsString
       case "rec"  => time { ThueMorse.compute(nth) }//.resultAsString
+      case "sub"  => time { ThueMorse.strSubstitutionCompute(nth) }//.resultAsString
+      case "bit"  => time { ThueMorse.bitCompute(nth) }//.resultAsString
       case _  => {
         println("recursive caseclass")
         time { ThueMorse.compute(nth) }
@@ -58,16 +87,23 @@ object ThueMorseCompute {
 
         println("recursive str")
         time { ThueMorse.strCompute(nth) }
+
+        println("str substituion")
+        time { ThueMorse.strSubstitutionCompute(nth) }
+
+        println("bit style")
+        time { ThueMorse.bitCompute(nth) }
       }
     }
   }
   def time[A](a: => A) = {
-    val now = System.nanoTime
-    val res = a
-    val seconds = (System.nanoTime - now) / 1000 / 1000.0 / 1000.0
-    println(s"$seconds seconds")
+    val res = (1 to 25).map { i =>
+      val now = System.nanoTime
+      a
+      ((System.nanoTime - now) / 1000 / 1000.0 / 1000.0)
+    }
 
-    res
+    println("took "+(res.sum/res.length)+" seconds")
   }
 
 }
